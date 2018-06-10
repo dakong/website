@@ -32,6 +32,7 @@ func errorHandler(handler resourceHandler) simplerouter.Handle {
 	fn := func(res http.ResponseWriter, req *http.Request, p simplerouter.Params) {
 		response, err := handler(req, p)
 		if err != nil {
+			res.WriteHeader(err.Code)
 			res.Write(toJSON(err))
 		} else {
 			res.Write(toJSON(response))
@@ -59,9 +60,10 @@ func (app *App) RegisterRoutes() *simplerouter.Router {
 	// Define our CRUD rest API
 	// TODOD: Currently there's a bug in the simple router
 	app.Router.Post("/blog", errorHandler(app.CreateBlogPost))
+	app.Router.Get("/blog/:id", errorHandler(app.ReadBlogPost))
+	app.Router.Get("/blog", errorHandler(app.ReadAllBlogPosts))
+	app.Router.Put("/blog/:id", errorHandler(app.UpdatBlogPost))
 	app.Router.Delete("/blog/:id", errorHandler(app.DeleteBlogPost))
-	app.Router.Get("/blog/:id", errorHandler(app.GetBlogPost))
-	app.Router.Put("/blog/:id", errorHandler(app.EditBlogPost))
 
 	return app.Router
 }

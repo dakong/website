@@ -22,6 +22,11 @@ func InitializeService(db *sql.DB) *BlogService {
 	return &BlogService{DB: db}
 }
 
+// Create ...
+func (service *BlogService) Create(id int) (blogPost *model.BlogPost, err error) {
+	return nil, nil
+}
+
 // BlogPost will fetch a given blog post from the database
 func (service *BlogService) BlogPost(id int) (blogPost *model.BlogPost, err error) {
 	row := service.DB.QueryRow("SELECT id, title, body FROM blog_post WHERE id = ?", id)
@@ -31,38 +36,31 @@ func (service *BlogService) BlogPost(id int) (blogPost *model.BlogPost, err erro
 	return
 }
 
-// DeleteBlogPost ...
-func (service *BlogService) DeleteBlogPost(id int) (blogPost *model.BlogPost, err error) {
-	return nil, nil
+// BlogPosts will return all blog posts in the database
+func (service *BlogService) BlogPosts() (blogPosts *model.BlogPosts, err error) {
+	posts := make(model.BlogPosts, 0)
+
+	rows, err := service.DB.Query("SELECT id, title, body FROM blog_post")
+
+	for rows.Next() {
+		blogPost := model.BlogPost{}
+
+		err = rows.Scan(&blogPost.ID, &blogPost.Title, &blogPost.Body)
+		posts = append(posts, blogPost)
+	}
+
+	blogPosts = &posts
+
+	return
 }
 
-// EditBlogPost ...
-func (service *BlogService) EditBlogPost(id int) (blogPost *model.BlogPost, err error) {
-	return nil, nil
+// Delete ...
+func (service *BlogService) Delete(id int) (err error) {
+	_, err = service.DB.Exec("DELETE FROM blog_post WHERE id = ?", id)
+	return
 }
 
-// CreateBlogPost ...
-func (service *BlogService) CreateBlogPost(id int) (blogPost *model.BlogPost, err error) {
+// Update ...
+func (service *BlogService) Update(id int) (blogPost *model.BlogPost, err error) {
 	return nil, nil
 }
-
-// getBlogPostByID := func(res http.ResponseWriter, req *http.Request, p simplerouter.Params) {
-// 	id, _ := p.GetValue("id")
-// 	postList := make(BlogPosts, 0)
-
-// 	rows, err := db.Query("SELECT id, title, body FROM blog_post WHERE id = ?", id)
-// 	check(err)
-
-// 	for rows.Next() {
-// 		blogPost := BlogPost{}
-
-// 		err = rows.Scan(&blogPost.ID, &blogPost.Title, &blogPost.Body)
-// 		check(err)
-
-// 		postList = append(postList, blogPost)
-// 	}
-
-// 	response := Response{Data: postList}
-// 	result, err := json.Marshal(response)
-// 	res.Write([]byte(result))
-// }
