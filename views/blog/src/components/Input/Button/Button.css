@@ -1,0 +1,9 @@
+.button-submit {
+  display: block;
+  text-align: left;
+  cursor: pointer;
+  padding: 6px 12px;
+  font-size: 1.0em;
+  border-radius: 2px;
+  border: solid 1px #F1F1F1;
+}
